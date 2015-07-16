@@ -1,0 +1,168 @@
+###
+#
+#  Ratelimitd Server Configuration Settings
+#
+###
+[Server]
+
+# IP/Host to listen on
+# Allowed Values : ip or hostname or localhost or 0.0.0.0
+
+Host: localhost
+
+# Port to bind on
+# Allowed Values : Any Valid Unused Port Number
+
+Port: 12345
+
+# Path to PID file
+
+PidFile: /var/run/ratelimitd.pid
+
+
+###
+#
+#   Redis Configuration Settings
+#
+#   This software stores the quotas in redis.
+#
+#   If it is a single server setup then set Both RedisMaster And RedisSlave to the same redis instance
+#
+#   If it is a multi server setup then setup redis replication with a single redis master and all other redis instances[Running on each node] replicating from the redis master.
+#       Then set RedisMaster -> redismaster
+#                RedisSlave  -> each nodes redis slave
+#
+#   RedisMaster -> Used For Writes
+#   RedisSlave -> Used For Reads
+#
+###
+
+[RedisConfig]
+
+# Allowed Values : ip or hostname or localhost
+
+RedisMasterHost: 127.0.0.1
+
+#Redis Server Port
+
+RedisMasterPort: 6379
+
+#Redis Auth Password
+
+RedisMasterAuth: None
+
+#Redis DB
+RedisMasterDB: 0
+
+# Allowed Values : ip or hostname or localhost
+
+RedisSlaveHost: 127.0.0.1
+
+#Redis Server Port
+
+RedisSlavePort: 6379
+
+#Redis Auth Password
+
+RedisSlaveAuth: None
+
+#Redis DB
+RedisSlaveDB: 0
+###
+#
+#   This section defines the list of policies to activate and rate limit on.
+
+[Policies]
+
+# The Policies listed below will get applied and will also be applied in the same order mentioned. [Comma Seperated]
+# Allowed Values : IPPolicy,RecipientPolicy,SenderPolicy,RecipientDomainPolicy,SenderDomainPolicy,SaslSenderPolicy,SaslSenderDomainPolicy
+ActivePolicies: IPPolicy
+
+
+# How This Works : ?
+# Every mail received by Postfix generates an array of key-value pairs which is then sent to this daemon.
+# Rate limiting can be applied on any or all of these key-value pairs. Note that not all pairs are eligible for rate limiting (e.g. queue_id, encryption_keysize, etc.)
+# Whether rate limiting should be applied on a key-value pair depends on the list of activated Policies (e.g. IPPolicy, SenderPolicy, etc.). 
+# If the policy corresponding to a key-value pair is enabled, then rate limiting is applied on it.
+# The profile, which determines the quota for each key-value, is then fetched using the ProfileLookupMethod (e.g. HTTP, MySQL, etc.)
+# The rate limit for each of these profiles are fetched from the config file and then applied
+# The final verdict is sent to Postfix as configured
+
+# For example,We received a mail from test@example1.com (1.2.3.4), addressed to test@example2.com
+# We've enabled IPPolicy and SenderPolicy, so rate limiting will be applicable only on 1.2.3.4 and test@example1.com
+# Profile for 1.2.3.4 is determined by the ProfileLookupMethod which gives it a Profile say, 'Basic'Profile for test@example1.com is similarly determined, giving it a profile of 'Enterprise'
+# We fetch the rate limit quotas associated with each one of these profiles ('Basic' and 'Enterprise') from the config fileThe rate limits for 1.2.3.4 (Basic - say, 10 per 60 sec), and for test@example1.com (Enterprise - say, 10 per 1 sec) are applied
+
+# To improve performance, the 'profile' of a 'key' is again cached in redis as determined by the ProfileCacheTime in secs.[Set to '0'(zero) to disable the cache]
+# Each 'ProfileLookupMethod' has its own parameters which is documented in the ProfileLookupMethods readme file
+# If PofileLookupMethod is set to 'None', Then any 'key' under that Policy will have a 'profile' as 'default'
+
+# [XPolicy]
+# Enforce: If False,it will track quota but will NOT reject mails,If True then actions are Enforced
+# RejectMessage: String returned to postfix on rejection
+# ProfileLookupMethod: The lookup method of the Policy Allowed Values: None , HTTPURI , 
+# [X-Profiles] : This section contains the profile rate limits for  Policy X. Specifying default profile ratelimits is a must.
+# PROFILE: NoOfMails,DurationInSecounds
+
+# IP based policy
+[IPPolicy]
+Enforce: True
+RejectMessage: 550 5.4.6 IP Quota Exceeded
+ProfileLookupMethod: None
+ProfileCacheTime: 30
+[IPPolicy-Profiles]
+default: 50,30
+
+# Recipient based policy
+[RecipientPolicy]
+Enforce: True
+RejectMessage: 550 5.4.6 Recipient Quota Exceeded
+ProfileLookupMethod: None
+ProfileCacheTime: 30
+[RecipientPolicy-Profiles]
+default: 50,30
+
+# Sender based policy
+[SenderPolicy]
+Enforce: True
+RejectMessage: 550 5.4.6 Sender Quota Exceeded
+ProfileLookupMethod: None
+ProfileCacheTime: 30
+[SenderPolicy-Profiles]
+default: 50,30
+
+# Recipient Domain based policy
+[RecipientDomainPolicy]
+Enforce: True
+RejectMessage: 550 5.4.6 Recipient Domain Quota Exceeded
+ProfileLookupMethod: None
+ProfileCacheTime: 30
+[RecipientDomainPolicy-Profiles]
+default: 50,30
+
+# Sender Domain based policy
+[SenderDomainPolicy]
+Enforce: True
+RejectMessage: 550 5.4.6 Sender Domain Quota Exceeded
+ProfileLookupMethod: None
+ProfileCacheTime: 30
+[SenderDomainPolicy-Profiles]
+default: 50,30
+
+# SASL Sender based policy
+[SaslSenderPolicy]
+Enforce: True
+RejectMessage: 550 5.4.6 Sender Quota Exceeded
+ProfileLookupMethod: None
+ProfileCacheTime: 30
+[SaslSenderPolicy-Profiles]
+default: 50,30
+
+# SASL Sender Domain based policy
+[SaslSenderDomainPolicy]
+Enforce: True
+RejectMessage: 550 5.4.6 Sender Domain Quota Exceeded
+ProfileLookupMethod: None
+ProfileCacheTime: 30
+[SaslSenderDomainPolicy-Profiles]
+default: 50,30
