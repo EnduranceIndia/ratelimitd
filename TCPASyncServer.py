@@ -50,7 +50,6 @@ class TCPHandler(asynchat.async_chat):
 
     def found_terminator(self):
         message = PostfixParser(self.buffer)
-        PolicyStack.init_policys(self.parsed_config)
         self.push(PolicyStack.check_policy(message))
         self.buffer = []
 
@@ -66,6 +65,7 @@ class TCPASyncServer(Daemon):
         """
         try:
             self.parsed_config = parsed_config
+            PolicyStack.init_policys(self.parsed_config)
             Daemon.__init__(self, parsed_config.get('Server', 'PidFile'))
             self.Host = parsed_config.get('Server', 'Host')
             self.Port = parsed_config.getint('Server', 'Port')
