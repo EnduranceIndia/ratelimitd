@@ -39,7 +39,7 @@ class RecipientPolicy:
         self.value = self.profile = self.error = None
 
     def check_quota(self, message, redis_pipe):
-        self.value = message.data[self.key]
+        self.value = message.data[self.key].lower()
         self.error = False
         if self.value != '':
             self.profile = self.ProfileLookupObj.lookup(self.value, self.ProfileCacheTTL)

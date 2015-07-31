@@ -41,7 +41,7 @@ class SenderDomainPolicy:
     def check_quota(self, message, redis_pipe):
         self.error = False
         try:
-            self.value = message.data[self.key].split('@')[1]
+            self.value = message.data[self.key].split('@')[1].lower()
             self.profile = self.ProfileLookupObj.lookup(self.value, self.ProfileCacheTTL)
             RedisConn.LUA_CALL_CHECK_LIMIT(keys=[SenderDomainPolicy.prefix + self.value],
                                            args=[SenderDomainPolicy.quota[self.profile][0]], client=redis_pipe)
