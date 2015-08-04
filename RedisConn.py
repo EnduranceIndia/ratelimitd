@@ -82,5 +82,6 @@ class RedisConn(object):
             RedisConn.LUA_CALL_DO_NOTHING_SLAVE = RedisConn.Redis_Slave.register_script(RedisConn.LUA_DO_NOTHING)
             RedisConn.LUA_CALL_DO_NOTHING_MASTER = RedisConn.Redis_Slave.register_script(RedisConn.LUA_DO_NOTHING)
         except Exception, E:
+            Logger.log('Server Shutting Down')
             Logger.log(str(E))
             exit(0)
