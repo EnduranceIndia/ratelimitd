@@ -28,21 +28,23 @@ class ProfileLookup:
     """
 
     @staticmethod
-    def create_profile_lookup(policystack, parsed_config):
-        lookup_type = parsed_config.get(policystack, 'ProfileLookupMethod')
+    def create_profile_lookup(policy, parsed_config):
+        lookup_type = parsed_config.get(policy, 'ProfileLookupMethod')
         if lookup_type == 'None':
-            Logger.log('Selected Lookup %s for Policy %s' % ('None', policystack))
+            Logger.log('Selected Lookup %s for Policy %s' % ('None', policy))
             return DefaultLookup()
         else:
             parsed_lookup_type = urlparse(lookup_type)
             if parsed_lookup_type.scheme == 'http' or parsed_lookup_type.scheme == 'https':
-                Logger.log('Selected Lookup %s for Policy %s' % ('HTTP', policystack))
+                Logger.log('Selected Lookup %s for Policy %s' % ('HTTP', policy))
                 return HTTPLookup(parsed_lookup_type.geturl())
             elif parsed_lookup_type.scheme == 'hash':
-                Logger.log('Selected Lookup %s for Policy %s' % ('Hash', policystack))
+                Logger.log('Selected Lookup %s for Policy %s' % ('Hash', policy))
                 return HashLookup(parsed_lookup_type.path)
             else:
                 Logger.log('Unknown lookup type: %s' % lookup_type)
+                Logger.log('Server Shutting Down')
+                exit(0)
 
     def __init__(self):
         """
