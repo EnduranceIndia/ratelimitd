@@ -74,7 +74,7 @@ RedisSlaveDB: 0
 
 [Policies]
 
-# The Policies listed below will get applied and will also be applied in the same order mentioned. [Comma Seperated]
+# The Policies listed below will get applied and will also be applied in the same order mentioned. [Comma Separated]
 # Allowed Values : IPPolicy,RecipientPolicy,SenderPolicy,RecipientDomainPolicy,SenderDomainPolicy,SaslSenderPolicy,SaslSenderDomainPolicy
 ActivePolicies: IPPolicy
 
@@ -95,14 +95,14 @@ ActivePolicies: IPPolicy
 
 # To improve performance, the 'profile' of a 'key' is again cached in redis as determined by the ProfileCacheTime in secs.[Set to '0'(zero) to disable the cache]
 # Each 'ProfileLookupMethod' has its own parameters which is documented in the ProfileLookupMethods readme file
-# If PofileLookupMethod is set to 'None', Then any 'key' under that Policy will have a 'profile' as 'default'
+# If ProfileLookupMethod is set to 'None', Then any 'key' under that Policy will have a 'profile' as 'default'
 
 # [XPolicy]
 # Enforce: If False,it will track quota but will NOT reject mails,If True then actions are Enforced
 # RejectMessage: String returned to postfix on rejection
-# ProfileLookupMethod: The lookup method of the Policy Allowed Values: None , HTTPURI , 
-# [X-Profiles] : This section contains the profile rate limits for  Policy X. Specifying default profile ratelimits is a must.
-# PROFILE: NoOfMails,DurationInSecounds
+# ProfileLookupMethod: The lookup method of the Policy Allowed Values: None , HTTPURI , Hash [Please see https://github.com/EnduranceIndia/ratelimitd/wiki/ProfileLookUp-Methods for more info] 
+# [X-Profiles] : This section contains the profile rate limits for  Policy X. Specifying default profile rate-limits is a must.
+# PROFILE: NoOfMails,DurationInSeconds
 
 # IP based policy
 [IPPolicy]

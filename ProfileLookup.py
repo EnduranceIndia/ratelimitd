@@ -19,6 +19,7 @@ from urlparse import urlparse
 from Logger import Logger
 from ProfileLookups.DefaultLookup import DefaultLookup
 from ProfileLookups.HTTPLookup import HTTPLookup
+from ProfileLookups.HashLookup import HashLookup
 
 
 class ProfileLookup:
@@ -37,6 +38,9 @@ class ProfileLookup:
             if parsed_lookup_type.scheme == 'http' or parsed_lookup_type.scheme == 'https':
                 Logger.log('Selected Lookup %s for Policy %s' % ('HTTP', policystack))
                 return HTTPLookup(parsed_lookup_type.geturl())
+            elif parsed_lookup_type.scheme == 'hash':
+                Logger.log('Selected Lookup %s for Policy %s' % ('Hash', policystack))
+                return HashLookup(parsed_lookup_type.path)
             else:
                 Logger.log('Unknown lookup type: %s' % lookup_type)
 
