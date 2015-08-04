@@ -21,6 +21,8 @@ class PostfixParser(object):
     This class parses the message postfix sends conforming to the policyd protocol
     """
 
+    DUNNO = 'action=dunno\n\n'
+
     def __init__(self, tcpbuffer):
         """
         Constructor

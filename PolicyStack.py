@@ -24,6 +24,7 @@ from Policies.SaslSenderDomainPolicy import SaslSenderDomainPolicy
 from Policies.SaslSenderPolicy import SaslSenderPolicy
 from Policies.SenderDomainPolicy import SenderDomainPolicy
 from Policies.SenderPolicy import SenderPolicy
+from PostfixParser import PostfixParser
 from RedisConn import RedisConn
 
 
@@ -79,7 +80,7 @@ class PolicyStack:
                         return 'action=%s\n\n' % PolicyStack.policies[i].RejectMessage
                     else:
                         PolicyStack.policies[i].log_quota(False)
-                        return 'action=dunno\n\n'
+                        return PostfixParser.DUNNO
 
             pipe = RedisConn.Redis_Master.pipeline()
             for policy in PolicyStack.policies:
@@ -88,13 +89,13 @@ class PolicyStack:
             redis_return = pipe.execute()
             for i in xrange(len(PolicyStack.policies)):
                 PolicyStack.policies[i].log_quota(True, redis_return[i])
-            return 'action=dunno\n\n'
+            return PostfixParser.DUNNO
         except KeyError as e:
             Logger.log('Unknown Profile :  %s ' % str(e))
-            return 'action=dunno\n\n'
+            return PostfixParser.DUNNO
         except redis.exceptions.RedisError as e:
             Logger.log('Redis Error :  %s Message : %s' % (type(e), e.args))
-            return 'action=dunno\n\n'
+            return PostfixParser.DUNNO
         except Exception as e:
             Logger.log('Error :  %s Message : %s' % (type(e), e.args))
-            return 'action=dunno\n\n'
+            return PostfixParser.DUNNO
