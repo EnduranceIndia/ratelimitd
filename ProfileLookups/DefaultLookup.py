@@ -23,5 +23,6 @@ class DefaultLookup:
     def __init__(self):
         pass
 
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def lookup(self, key=None, ttl=None):
         return 'default'

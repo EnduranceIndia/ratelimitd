@@ -51,7 +51,7 @@ class PSqlLookup:
                     profile = profile[0].lower()
                     if ttl != 0:
                         RedisConn.Redis_Master.setex('PSqlLookupProfile_' + key, profile, ttl)
-            except Exception as e:
-                Logger.log('PSqlLookup Error :  %s Message : %s' % (type(e), e.args))
+            except Exception as E:
+                Logger.log('PSqlLookup Error :  %s Message : %s' % (type(E), E.args))
                 profile = 'default'
         return profile
