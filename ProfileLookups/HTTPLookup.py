@@ -30,7 +30,7 @@ class HTTPLookup:
             profile = RedisConn.Redis_Slave.get('HTTPLookupProfile_' + key)
         if profile is None:
             try:
-                profile = urllib.urlopen(self.url.replace('%s', key)).read()
+                profile = urllib.urlopen(self.url.replace('%s', key)).read().lower()
                 if ttl != 0:
                     RedisConn.Redis_Master.setex('HTTPLookupProfile_' + key, profile, ttl)
             except Exception as e:
