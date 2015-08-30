@@ -100,8 +100,9 @@ ActivePolicies: IPPolicy
 # [XPolicy]
 # Enforce: If False,it will track quota but will NOT reject mails,If True then actions are Enforced
 # RejectMessage: String returned to postfix on rejection
-# ProfileLookupMethod: The lookup method of the Policy Allowed Values: None , HTTPURI , Hash [Please see https://github.com/EnduranceIndia/ratelimitd/wiki/ProfileLookUp-Methods for more info] 
-# [X-Profiles] : This section contains the profile rate limits for  Policy X. Specifying default profile rate-limits is a must.
+# ProfileLookupMethod: The lookup method of the Policy Allowed Values: None , HTTPURI , Hash , PostgresqlURI [Please see https://github.com/EnduranceIndia/ratelimitd/wiki/ProfileLookUp-Methods for more info]
+# ProfileLookupQuery: This is an optional parameter required by Postgresql lookup. [Please see https://github.com/EnduranceIndia/ratelimitd/wiki/ProfileLookUp-Methods for more info]
+# [X-Profiles] : This section contains the profile rate limits for Policy X. Specifying 'default' profile rate-limits is a must.
 # PROFILE: NoOfMails,DurationInSeconds
 
 # IP based policy
