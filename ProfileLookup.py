@@ -48,7 +48,7 @@ class ProfileLookup:
             else:
                 Logger.log('Unknown lookup type: %s' % lookup_type)
                 Logger.log('Server Shutting Down')
-                exit(0)
+                exit(1)
 
     def __init__(self):
         """

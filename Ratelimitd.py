@@ -48,7 +48,7 @@ class Ratelimitd(object):
             else:
                 print "Unknown command"
                 sys.exit(2)
-            sys.exit(0)
+            sys.exit(1)
         else:
             print "usage: %s start|stop|restart" % sys.argv[0]
             sys.exit(2)

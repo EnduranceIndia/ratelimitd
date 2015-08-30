@@ -62,7 +62,7 @@ class PolicyStack:
             except Exception, e:
                 Logger.log('Error In Policies Initialization %s ' % str(e))
                 Logger.log('Server Shutting Down')
-                exit(0)
+                exit(1)
 
     @staticmethod
     def check_policy(message):

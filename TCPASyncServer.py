@@ -72,7 +72,7 @@ class TCPASyncServer(Daemon):
         except Exception, e:
             Logger.log(str(e))
             Logger.log('Server Shutting Down')
-            exit(0)
+            exit(1)
 
     def run(self):
         try:
@@ -81,4 +81,4 @@ class TCPASyncServer(Daemon):
         except Exception, e:
             Logger.log(str(e))
             Logger.log('Server Shutting Down')
-            exit(0)
+            exit(1)
