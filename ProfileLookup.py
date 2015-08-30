@@ -20,6 +20,7 @@ from Logger import Logger
 from ProfileLookups.DefaultLookup import DefaultLookup
 from ProfileLookups.HTTPLookup import HTTPLookup
 from ProfileLookups.HashLookup import HashLookup
+from ProfileLookups.PSqlLookup import PSqlLookup
 
 
 class ProfileLookup:
@@ -41,6 +42,9 @@ class ProfileLookup:
             elif parsed_lookup_type.scheme == 'hash':
                 Logger.log('Selected Lookup %s for Policy %s' % ('Hash', policy))
                 return HashLookup(parsed_lookup_type.path)
+            elif parsed_lookup_type.scheme == 'postgresql':
+                Logger.log('Selected Lookup %s for Policy %s' % ('postgresql', policy))
+                return PSqlLookup(parsed_lookup_type.geturl(), parsed_config.get(policy, 'ProfileLookupQuery'))
             else:
                 Logger.log('Unknown lookup type: %s' % lookup_type)
                 Logger.log('Server Shutting Down')
