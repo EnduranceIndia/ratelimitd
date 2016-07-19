@@ -47,6 +47,7 @@ class SaslSenderDomainPolicy:
                                            args=[SaslSenderDomainPolicy.quota[self.profile][0]], client=redis_pipe)
         except IndexError:
             self.error = True
+            self.message = message
             RedisConn.LUA_CALL_DO_NOTHING_SLAVE(keys=[], args=[], client=redis_pipe)
 
     def update_quota(self, redis_pipe):
@@ -56,11 +57,12 @@ class SaslSenderDomainPolicy:
             RedisConn.LUA_CALL_INCR(keys=[SaslSenderDomainPolicy.prefix + self.value],
                                     args=[SaslSenderDomainPolicy.quota[self.profile][1]], client=redis_pipe)
 
-    def log_quota(self, message, accept, redis_val=None):
+    def log_quota(self, accept, redis_val=None):
         if accept:
             if self.error:
                 Logger.log(
-                    'SaslSenderDomainPolicy Unable To Spilt SaslSender(%s) Action: accept' % (message.data[self.key]))
+                    'SaslSenderDomainPolicy Unable To Spilt SaslSender(%s) Action: accept' % (
+                        self.message.data[self.key]))
             else:
                 Logger.log('SaslSenderDomainPolicy SaslSenderDomain: %s Quota: (%s/%s) Profile: %s Action: accept' % (
                     self.value, str(int(redis_val)), str(SaslSenderDomainPolicy.quota[self.profile][0]), self.profile))

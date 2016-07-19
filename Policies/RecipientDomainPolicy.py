@@ -47,6 +47,7 @@ class RecipientDomainPolicy:
                                            args=[RecipientDomainPolicy.quota[self.profile][0]], client=redis_pipe)
         except IndexError:
             self.error = True
+            self.message = message
             RedisConn.LUA_CALL_DO_NOTHING_SLAVE(keys=[], args=[], client=redis_pipe)
 
     def update_quota(self, redis_pipe):
@@ -56,11 +57,11 @@ class RecipientDomainPolicy:
             RedisConn.LUA_CALL_INCR(keys=[RecipientDomainPolicy.prefix + self.value],
                                     args=[RecipientDomainPolicy.quota[self.profile][1]], client=redis_pipe)
 
-    def log_quota(self, message, accept, redis_val=None):
+    def log_quota(self, accept, redis_val=None):
         if accept:
             if self.error:
                 Logger.log('RecipientDomainPolicy Unable To Split RecipientDomain (%s) Action: accept' % (
-                    message.data[self.key]))
+                    self.message.data[self.key]))
             else:
                 Logger.log('RecipientDomainPolicy RecipientDomain: %s Quota: (%s/%s) Profile: %s Action: accept' % (
                     self.value, str(int(redis_val)), str(RecipientDomainPolicy.quota[self.profile][0]), self.profile))
