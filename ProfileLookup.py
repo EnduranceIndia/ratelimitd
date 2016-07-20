@@ -17,10 +17,6 @@ limitations under the License.
 from urlparse import urlparse
 
 from Logger import Logger
-from ProfileLookups.DefaultLookup import DefaultLookup
-from ProfileLookups.HTTPLookup import HTTPLookup
-from ProfileLookups.HashLookup import HashLookup
-from ProfileLookups.PSqlLookup import PSqlLookup
 
 
 class ProfileLookup:
@@ -33,17 +29,21 @@ class ProfileLookup:
         lookup_type = parsed_config.get(policy, 'ProfileLookupMethod')
         if lookup_type == 'None':
             Logger.log('Selected Lookup %s for Policy %s' % ('None', policy))
+            from ProfileLookups.DefaultLookup import DefaultLookup
             return DefaultLookup()
         else:
             parsed_lookup_type = urlparse(lookup_type)
             if parsed_lookup_type.scheme == 'http' or parsed_lookup_type.scheme == 'https':
                 Logger.log('Selected Lookup %s for Policy %s' % ('HTTP', policy))
+                from ProfileLookups.HTTPLookup import HTTPLookup
                 return HTTPLookup(parsed_lookup_type.geturl())
             elif parsed_lookup_type.scheme == 'hash':
                 Logger.log('Selected Lookup %s for Policy %s' % ('Hash', policy))
+                from ProfileLookups.HashLookup import HashLookup
                 return HashLookup(parsed_lookup_type.path)
             elif parsed_lookup_type.scheme == 'postgresql':
                 Logger.log('Selected Lookup %s for Policy %s' % ('postgresql', policy))
+                from ProfileLookups.PSqlLookup import PSqlLookup
                 return PSqlLookup(parsed_lookup_type.geturl(), parsed_config.get(policy, 'ProfileLookupQuery'))
             else:
                 Logger.log('Unknown lookup type: %s' % lookup_type)
