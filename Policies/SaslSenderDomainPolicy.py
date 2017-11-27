@@ -22,7 +22,7 @@ class SaslSenderDomainPolicy:
     """
     This class provides saslsender domain rate limiting
     """
-    key = 'sasl_sender'
+    key = 'sasl_username'
     prefix = 'SaslSenderPolicy_'
     quota = {}
 
